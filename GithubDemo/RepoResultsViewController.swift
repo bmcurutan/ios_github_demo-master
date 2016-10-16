@@ -70,7 +70,9 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         let repo = self.repos[indexPath.row]
         let cell = self.repoTableView.dequeueReusableCell(withIdentifier: "repoCell") as! RepoTableViewCell
         
-        //cell.avatarImageView
+        let url = NSURL(string: repo.ownerAvatarURL!)
+        cell.avatarImageView.setImageWith(url as! URL)
+        
         cell.nameLabel.text = repo.name! as String
         cell.ownerLabel.text = repo.ownerHandle! as String
         cell.starsLabel.text = String(describing: repo.stars!)
