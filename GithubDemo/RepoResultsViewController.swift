@@ -50,7 +50,6 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
             // Print the returned repositories to the output window
             for repo in newRepos {
                 print(repo)
-                //    self.repos.append(repo)
             }
             
             self.repoTableView.reloadData()
@@ -86,6 +85,25 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         return cell
     }
 
+    // MARK: - Settings
+    
+    @IBAction func settingsButtonPressed(_ sender: AnyObject) {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let settingsViewController = storyboard.instantiateViewController(withIdentifier: "settingsViewController") as! SettingsViewController
+        settingsViewController.doneHandler = { (stars: Int?) -> Void in
+            self.minStarsFilter(stars: stars)
+        }
+        present(settingsViewController, animated: true, completion: nil)
+    }
+        
+    func minStarsFilter(stars: Int?) {
+        print("Minimum number of stars: \(stars)")
+        dismiss(animated: true, completion: nil)
+        if let minStars = stars {
+            searchSettings.minStars = minStars
+        }
+        doSearch()
+    }
 }
 
 // SearchBar methods
