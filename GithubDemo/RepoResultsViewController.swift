@@ -32,6 +32,10 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
 
         // Perform the first search when the view controller first loads
         doSearch()
+        
+        // Resize rows
+        self.repoTableView.estimatedRowHeight = 100
+        self.repoTableView.rowHeight = UITableViewAutomaticDimension
     }
 
     // Perform the search.
