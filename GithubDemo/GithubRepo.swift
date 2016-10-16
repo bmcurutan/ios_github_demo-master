@@ -48,28 +48,30 @@ class GithubRepo: CustomStringConvertible {
     
     // Actually fetch the list of repositories from the GitHub API.
     // Calls successCallback(...) if the request is successful
-    class func fetchRepos(settings: GithubRepoSearchSettings, successCallback: ([GithubRepo]) -> Void, error: ((NSError?) -> Void)?) {
+    class func fetchRepos(_ settings: GithubRepoSearchSettings, successCallback: @escaping ([GithubRepo]) -> Void, error: ((NSError?) -> Void)?) {
         let manager = AFHTTPRequestOperationManager()
         let params = queryParamsWithSettings(settings);
         
-        manager.GET(reposUrl, parameters: params, success: { (operation ,responseObject) -> Void in
-            if let results = responseObject["items"] as? NSArray {
-                var repos: [GithubRepo] = []
-                for result in results as! [NSDictionary] {
-                    repos.append(GithubRepo(jsonResult: result))
+        manager.get(reposUrl, parameters: params, success: { (operation ,response) -> Void in
+            if let responseObject = response as? NSDictionary {
+                if let results = responseObject["items"] as? NSArray {
+                    var repos: [GithubRepo] = []
+                    for result in results as! [NSDictionary] {
+                        repos.append(GithubRepo(jsonResult: result))
+                    }
+                    successCallback(repos)
                 }
-                successCallback(repos)
             }
         }, failure: { (operation, requestError) -> Void in
             if let errorCallback = error {
-                errorCallback(requestError)
+                errorCallback(requestError as NSError?)
             }
         })
     }
     
     // Helper method that constructs a dictionary of the query parameters used in the request to the
     // GitHub API
-    private class func queryParamsWithSettings(settings: GithubRepoSearchSettings) -> [String: String] {
+    fileprivate class func queryParamsWithSettings(_ settings: GithubRepoSearchSettings) -> [String: String] {
         var params: [String:String] = [:];
         if let clientId = clientId {
             params["client_id"] = clientId;
