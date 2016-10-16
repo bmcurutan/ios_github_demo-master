@@ -8,20 +8,17 @@
 
 import UIKit
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var starsSlider: UISlider!
+    @IBOutlet weak var languagesTableView: UITableView!
     
     var stars: Int?
     var doneHandler: ((Int?) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        self.languagesTableView.isHidden = true
     }
     
     func numberOfStars() -> Int? {
@@ -37,14 +34,21 @@ class SettingsViewController: UIViewController {
         doneHandler?(self.stars)
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    @IBAction func languageToggled(_ sender: AnyObject) {
+        if let toggle = sender as? UISwitch {
+            self.languagesTableView.isHidden = !toggle.isOn
+        }
     }
-    */
-
+    
+    // MARK: - UITableViewDataSource
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return languages.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = self.languagesTableView.dequeueReusableCell(withIdentifier: "languageCell")
+        cell?.textLabel?.text = languages.allKeys[indexPath.row] as? String
+        return cell!
+    }
 }

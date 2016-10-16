@@ -12,6 +12,7 @@ import AFNetworking
 private let reposUrl = "https://api.github.com/search/repositories"
 private let clientId: String? = nil
 private let clientSecret: String? = nil
+var languages: NSDictionary = NSMutableDictionary()
 
 // Model class that represents a GitHub repository
 class GithubRepo: CustomStringConvertible {
@@ -22,6 +23,7 @@ class GithubRepo: CustomStringConvertible {
     var stars: Int?
     var forks: Int?
     var repoDescription: String?
+    var language: String?
     
     // Initializes a GitHubRepo from a JSON dictionary
     init(jsonResult: NSDictionary) {
@@ -49,6 +51,10 @@ class GithubRepo: CustomStringConvertible {
         if let description = jsonResult["description"] as? String {
             self.repoDescription = description
         }
+        
+        if let language = jsonResult["language"] as? String {
+            self.language = language
+        }
     }
     
     // Actually fetch the list of repositories from the GitHub API.
@@ -62,7 +68,11 @@ class GithubRepo: CustomStringConvertible {
                 if let results = responseObject["items"] as? NSArray {
                     var repos: [GithubRepo] = []
                     for result in results as! [NSDictionary] {
-                        repos.append(GithubRepo(jsonResult: result))
+                        let repo = GithubRepo(jsonResult: result)
+                        repos.append(repo)
+                        if let language = repo.language {
+                            languages.setValue(false, forKey: language)
+                        }
                     }
                     successCallback(repos)
                 }
@@ -95,17 +105,20 @@ class GithubRepo: CustomStringConvertible {
         
         params["sort"] = "stars";
         params["order"] = "desc";
+        params["language"] = "\(settings.language)"
         
         return params;
     }
 
     // Creates a text representation of a GitHub repo
     var description: String {
+        let language = nil != self.language ? self.language : ""
         return "[Name: \(self.name!)]" +
             "\n\t[Stars: \(self.stars!)]" +
             "\n\t[Forks: \(self.forks!)]" +
             "\n\t[Owner: \(self.ownerHandle!)]" +
             "\n\t[Avatar: \(self.ownerAvatarURL!)]" +
-            "\n\t[Description: \(self.repoDescription!)]"
+            "\n\t[Description: \(self.repoDescription!)]" +
+            "\n\t[Language: \(language)]"
     }
 }

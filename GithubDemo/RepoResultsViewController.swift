@@ -81,6 +81,7 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
         cell.starsLabel.text = String(describing: repo.stars!)
         cell.forksLabel.text = String(describing: repo.forks!)
         cell.descriptionLabel.text = repo.repoDescription
+        cell.languageLabel.text = repo.language
         
         return cell
     }
