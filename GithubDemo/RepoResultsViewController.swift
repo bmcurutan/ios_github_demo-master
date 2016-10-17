@@ -98,7 +98,6 @@ class RepoResultsViewController: UIViewController, UITableViewDataSource, UITabl
     }
         
     func minStarsFilter(stars: Int?) {
-        print("Minimum number of stars: \(stars)")
         dismiss(animated: true, completion: nil)
         if let minStars = stars {
             searchSettings.minStars = minStars

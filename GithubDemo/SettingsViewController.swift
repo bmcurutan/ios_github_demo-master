@@ -13,12 +13,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var starsSlider: UISlider!
     @IBOutlet weak var languagesTableView: UITableView!
     
-    var stars: Int?
+    var stars: Int = 0
     var doneHandler: ((Int?) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.languagesTableView.isHidden = true
+        self.starsSlider.value = 0
     }
     
     func numberOfStars() -> Int? {
@@ -48,7 +49,28 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.languagesTableView.dequeueReusableCell(withIdentifier: "languageCell")
-        cell?.textLabel?.text = languages.allKeys[indexPath.row] as? String
+        if let key = languages.allKeys[indexPath.row] as? String {
+            cell?.textLabel?.text = key
+            if (true == languages.value(forKey: key) as! Bool) {
+                cell?.accessoryType = .checkmark
+            } else {
+                cell?.accessoryType = .none
+            }
+        }
         return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let key =  languages.allKeys[indexPath.row] as? String {
+            let value = languages.value(forKey: key) as! Bool
+            languages.setValue(!value, forKey: key)
+            let cell = tableView.cellForRow(at: indexPath)
+            if !value {
+                cell?.accessoryType = .checkmark
+            } else {
+                cell?.accessoryType = .none
+            }
+        }
+        self.languagesTableView.deselectRow(at: indexPath, animated: true)
     }
 }

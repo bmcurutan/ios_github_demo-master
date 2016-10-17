@@ -97,15 +97,26 @@ class GithubRepo: CustomStringConvertible {
         }
         
         var q = "";
+        var langs = String()
+        for key in languages.allKeys {
+            if true == languages.value(forKey: key as! String) as! Bool {
+                langs += "+language:\(key)"
+            }
+        }
+        if 0 < langs.characters.count {
+            langs.remove(at: langs.startIndex)
+        }
+        q += langs
+        
         if let searchString = settings.searchString {
             q = q + searchString;
         }
         q = q + " stars:>\(settings.minStars)";
-        params["q"] = q;
+        
+        params["q"] = q
         
         params["sort"] = "stars";
         params["order"] = "desc";
-        params["language"] = "\(settings.language)"
         
         return params;
     }
